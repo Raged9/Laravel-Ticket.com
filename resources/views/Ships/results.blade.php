@@ -50,7 +50,7 @@
                             Rp {{ number_format($voyage['total_harga'], 0, ',', '.') }}
                         </div>
                         <div class="text-sm text-gray-500 mb-2">Total Harga</div>
-                        <a href="#" class="bg-teal-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-700 transition duration-300">
+                        <a href="{{ route('ships.payment.show', ['id_pelayaran' => $voyage['id_pelayaran'], 'passengers' => $searchData['passengers']]) }}" class="bg-teal-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-700 transition duration-300">
                             Pilih
                         </a>
                     </div>
@@ -59,7 +59,7 @@
                 {{-- Tampilan jika tidak ada pelayaran --}}
                 <div class="bg-white rounded-lg shadow-md text-center p-8">
                     <h3 class="text-xl font-semibold text-gray-700">Oops! Tidak ada jadwal pelayaran.</h3>
-                    <p class="text-gray-500 mt-2">Tidak ada jadwal yang ditemukan untuk rute dan tanggal yang Anda pilih.</p>
+                    <p class="text-gray-500 mt-2">Tidak ada jadwal yang ditemukan untuk rute, tanggal, dan tipe tiket yang Anda pilih.</p>
                     <a href="{{ route('ships.search') }}" class="mt-4 inline-block bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300">
                         Coba Cari Lagi
                     </a>

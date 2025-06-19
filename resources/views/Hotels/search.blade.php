@@ -13,21 +13,24 @@
             <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
                 Pilih Detail Menginap
             </h1>
- 
-            <form action="{{ route('hotels.results') }}" method="POST">
+
+            <form action="{{ route('hotels.results') }}" method="POST" class="space-y-6">
                 @csrf
 
-                {{-- Lokasi Menginap --}}
+                {{-- Lokasi Menginap (Dropdown) --}}
                 <div>
                     <label for="location" class="block text-gray-700 font-semibold mb-2">Lokasi Menginap</label>
-                    <input
-                        type="text"
+                    <select
                         name="location"
                         id="location"
-                        placeholder="Contoh: Jakarta, Bali, Bandung"
                         required
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
+                    >
+                        <option value="" disabled selected>Pilih Lokasi</option>
+                        @foreach($locations as $location)
+                            <option value="{{ $location }}">{{ $location }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 {{-- Tanggal Check-in --}}
@@ -91,7 +94,5 @@
             </form>
         </div>
     </div>
-
 </body>
 </html>
-

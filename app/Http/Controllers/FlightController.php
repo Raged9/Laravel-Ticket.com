@@ -2,85 +2,136 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class FlightController extends Controller
 {
+    /**
+     * Menampilkan halaman pencarian dan mengisi dropdown dari database.
+     */
     public function index()
     {
-        // Nantinya kita bisa passing data kota dari database ke sini
-        return view('flights.search');
-    }
+        // Ambil data unik untuk dropdown dari tabel penerbangan
+        $origins = DB::table('penerbangan')->distinct()->pluck('kota_pergi');
+        $destinations = DB::table('penerbangan')->distinct()->pluck('kota_tujuan');
+        $classes = DB::table('penerbangan')->distinct()->pluck('kelas');
 
-    public function search(Request $request)
-    {
-        // 1. Validasi input dari user
-        $request->validate([
-            'origin' => 'required',
-            'destination' => 'required',
-            'departure_date' => 'required|date',
-        ]);
-
-        // 2. Ambil input dari form untuk ditampilkan kembali
-        $searchData = $request->all();
-
-        // 3. SIMULASI PENCARIAN DATA DARI DATABASE
-        // Kita buat data dummy di sini. Nantinya, ini akan diganti dengan query ke database.
-        $flights = $this->findDummyFlights($request->origin, $request->destination, $request->departure_date);
-
-        // 4. Kirim data penerbangan yang ditemukan ke view 'results'
-        return view('flights.results', [
-            'flights' => $flights,
-            'searchData' => $searchData
+        // Kirim data ke view
+        return view('flights.search', [
+            'origins' => $origins,
+            'destinations' => $destinations,
+            'classes' => $classes,
         ]);
     }
 
     /**
-     * Fungsi helper untuk membuat dan memfilter data dummy.
-     * Nantinya ini akan diganti dengan query database asli.
+     * Memproses pencarian dan menampilkan hasilnya dari database.
      */
-    private function findDummyFlights($origin, $destination, $departureDate)
+    public function search(Request $request)
     {
-        $allFlights = [
-            // Jadwal 1
-            [
-                'maskapai' => 'Garuda Indonesia',
-                'logo' => '/images/garuda-logo.png',
-                'berangkat' => Carbon::parse($departureDate)->setTime(7, 30), // Jam 07:30
-                'tiba' => Carbon::parse($departureDate)->setTime(9, 0),    // Jam 09:00
-                'durasi' => '1j 30m',
-                'harga' => 1500000,
-                'origin' => 'Jakarta (CGK)',
-                'destination' => 'Surabaya (SUB)',
-            ],
-            // Jadwal 2
-            [
-                'maskapai' => 'Citilink',
-                'logo' => '/images/citilink-logo.png',
-                'berangkat' => Carbon::parse($departureDate)->setTime(10, 0), // Jam 10:00
-                'tiba' => Carbon::parse($departureDate)->setTime(11, 30), // Jam 11:30
-                'durasi' => '1j 30m',
-                'harga' => 950000,
-                'origin' => 'Jakarta (CGK)',
-                'destination' => 'Surabaya (SUB)',
-            ],
-            // Jadwal 3
-            [
-                'maskapai' => 'Lion Air',
-                'logo' => '/images/lion-air-logo.png',
-                'berangkat' => Carbon::parse($departureDate)->setTime(14, 15), // Jam 14:15
-                'tiba' => Carbon::parse($departureDate)->setTime(16, 45), // Jam 16:45
-                'durasi' => '2j 30m',
-                'harga' => 1800000,
-                'origin' => 'Jakarta (CGK)',
-                'destination' => 'Bali (DPS)',
-            ],
-        ];
+        // 1. Validasi input dari user
+        $request->validate([
+            'origin' => 'required|string',
+            'destination' => 'required|string',
+            'departure_date' => 'required|date',
+            'flight_class' => 'required|string', // Validasi untuk kelas
+        ]);
 
-        // Filter data dummy berdasarkan input user
-        return collect($allFlights)->filter(function ($flight) use ($origin, $destination) {
-            return $flight['origin'] == $origin && $flight['destination'] == $destination;
-        })->all();
+        // 2. Ambil input dari form untuk ditampilkan kembali
+        $searchData = $request->all();
+        $departureDate = Carbon::parse($request->departure_date)->toDateString();
+
+        // 3. Lakukan query ke database untuk mencari penerbangan yang cocok
+        $results = DB::table('penerbangan')
+            ->where('kota_pergi', $request->origin)
+            ->where('kota_tujuan', $request->destination)
+            ->where('tanggal', $departureDate)
+            ->where('kelas', $request->flight_class) // Filter berdasarkan kelas
+            ->get();
+
+        // 4. Proses hasil query untuk disesuaikan dengan format view
+        $flights = $results->map(function ($flight) {
+            // Gabungkan tanggal dan waktu untuk membuat objek Carbon yang lengkap
+            $berangkat = Carbon::parse($flight->tanggal . ' ' . $flight->waktu_pergi);
+            $tiba = Carbon::parse($flight->tanggal . ' ' . $flight->waktu_tiba);
+            
+            // Handle jika penerbangan melewati tengah malam
+            if ($tiba->lessThan($berangkat)) {
+                $tiba->addDay();
+            }
+
+            // Hitung durasi penerbangan
+            $durasi = $berangkat->diff($tiba)->format('%hj %im');
+
+            return [
+                'id_penerbangan' => $flight->id_penerbangan,
+                'origin' => $flight->kota_pergi,
+                'destination' => $flight->kota_tujuan,
+                'berangkat' => $berangkat,
+                'tiba' => $tiba,
+                'durasi' => $durasi,
+                'harga' => $flight->harga,
+                'kelas' => $flight->kelas,
+            ];
+        });
+
+        // 5. Kirim data penerbangan yang ditemukan ke view 'results'
+        return view('flights.results', [
+            'flights' => $flights,
+            'searchData' => $searchData
+        ]);
+
+        
+    }
+    /**
+     * Menampilkan halaman pembayaran untuk tiket pesawat yang dipilih.
+     */
+    public function showPaymentPage($id_penerbangan)
+    {
+        $flight = DB::table('penerbangan')->where('id_penerbangan', $id_penerbangan)->first();
+
+        if (!$flight) {
+            abort(404, 'Data penerbangan tidak ditemukan.');
+        }
+
+        return view('flights.payment', [
+            'flight' => $flight,
+            'totalPrice' => $flight->harga // Harga diasumsikan per tiket
+        ]);
+    }
+
+    /**
+     * Memproses pembayaran, membuat histori, dan update counter user.
+     */
+    public function processPayment(Request $request)
+    {
+        $validated = $request->validate([
+            'id_penerbangan' => 'required|exists:penerbangan,id_penerbangan',
+            'harga_pembayaran' => 'required|numeric',
+            'jenis_pembayaran' => 'required|in:bank,kartu_kredit,e-wallet',
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            $user = Auth::user();
+
+            // Buat record baru di tabel histori
+            DB::table('histori')->insert([
+                'user_id' => $user->id,
+                'id_penerbangan' => $validated['id_penerbangan'],
+                'harga_pembayaran' => $validated['harga_pembayaran'],
+                'jenis_pembayaran' => $validated['jenis_pembayaran'],
+                'status' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Tambah (increment) counter tiket_pesawat di tabel users
+            $user->increment('tiket_pesawat');
+        });
+
+        return redirect()->route('history.index')->with('success', 'Pemesanan tiket pesawat berhasil!');
     }
 }

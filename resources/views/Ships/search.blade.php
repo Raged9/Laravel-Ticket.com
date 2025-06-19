@@ -18,9 +18,10 @@
                     <div>
                         <label for="origin" class="block text-sm font-medium text-gray-700">Dari Pelabuhan Mana?</label>
                         <select id="origin" name="origin" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
-                            <option>Tanjung Priok (Jakarta)</option>
-                            <option>Tanjung Perak (Surabaya)</option>
-                            <option>Merak (Banten)</option>
+                            <option disabled selected>Pilih Pelabuhan Asal</option>
+                            @foreach ($origins as $origin)
+                                <option value="{{ $origin }}">{{ $origin }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -28,24 +29,21 @@
                     <div>
                         <label for="destination" class="block text-sm font-medium text-gray-700">Ke Pelabuhan Mana?</label>
                         <select id="destination" name="destination" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
-                            <option>Tanjung Perak (Surabaya)</option>
-                            <option>Tanjung Priok (Jakarta)</option>
-                            <option>Bakauheni (Lampung)</option>
+                            <option disabled selected>Pilih Pelabuhan Tujuan</option>
+                             @foreach ($destinations as $destination)
+                                <option value="{{ $destination }}">{{ $destination }}</option>
+                            @endforeach
                         </select>
                     </div>
 
-                    {{-- Tanggal & Jam Berangkat --}}
-                    <div>
+                    {{-- Tanggal Berangkat --}}
+                    <div class="md:col-span-2">
                         <label for="departure_date" class="block text-sm font-medium text-gray-700">Tanggal Berangkat</label>
-                        <input type="date" id="departure_date" name="departure_date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
-                    </div>
-                     <div>
-                        <label for="departure_time" class="block text-sm font-medium text-gray-700">Jam Berangkat</label>
-                        <input type="time" id="departure_time" name="departure_time" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                        <input type="date" id="departure_date" name="departure_date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" required>
                     </div>
 
                     {{-- Tipe Tiket/Kendaraan --}}
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="ticket_type" class="block text-sm font-medium text-gray-700">Tipe Tiket (Kendaraan)</label>
                         <select id="ticket_type" name="ticket_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
                             <option>Pejalan Kaki</option>
@@ -56,7 +54,7 @@
                     </div>
                     
                     {{-- Jumlah Penumpang --}}
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="passengers" class="block text-sm font-medium text-gray-700">Jumlah Penumpang</label>
                         <input type="number" id="passengers" name="passengers" value="1" min="1" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
                     </div>
