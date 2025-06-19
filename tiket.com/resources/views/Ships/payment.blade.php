@@ -15,10 +15,6 @@
                     {{-- Asumsi variabel yang dikirim dari ShipController adalah $ship dan $totalPrice --}}
                     <table class="table table-sm table-borderless mb-4">
                         <tr>
-                            <td style="width: 150px;"><strong>Operator</strong></td>
-                            <td>: {{ $ship->operator ?? 'Nama Operator' }}</td>
-                        </tr>
-                        <tr>
                             <td><strong>Rute</strong></td>
                             <td>: {{ $ship->pelabuhan_awal }} <i class="fas fa-arrow-right"></i> {{ $ship->pelabuhan_akhir }}</td>
                         </tr>

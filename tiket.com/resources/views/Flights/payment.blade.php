@@ -14,10 +14,6 @@
                     <h5 class="card-title">Detail Penerbangan</h5>
                     <table class="table table-sm table-borderless mb-4">
                         <tr>
-                            <td style="width: 150px;"><strong>Maskapai</strong></td>
-                            <td>: {{ $flight->maskapai ?? 'Nama Maskapai' }}</td>
-                        </tr>
-                        <tr>
                             <td><strong>Rute</strong></td>
                             <td>: {{ $flight->kota_pergi }} <i class="fas fa-arrow-right"></i> {{ $flight->kota_tujuan }}</td>
                         </tr>

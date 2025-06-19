@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_pelayaran')->nullable();
             $table->unsignedBigInteger('id_reservasi')->nullable();
 
-            $table->enum('jenis_pembayaran', ['bank', 'kartu kredit', 'e-wallet']);
+            $table->enum('jenis_pembayaran', ['bank', 'kartu_kredit', 'e-wallet']);
             $table->decimal('harga_pembayaran', 15, 2);
             $table->boolean('status')->default(false); // false = belum lunas, true = lunas
 
