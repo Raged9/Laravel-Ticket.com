@@ -8,7 +8,7 @@
 <body class="bg-gray-100">
 
 <div class="max-w-xl mx-auto mt-12 p-6 bg-white rounded-lg shadow">
-    <h2 class="text-2xl font-bold mb-6 text-center text-blue-700">Simulasi Pembayaran Tiket</h2>
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-700">Pembayaran Tiket</h2>
 
     <form action="{{ route('payment.process') }}" method="POST">
         @csrf
