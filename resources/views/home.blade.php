@@ -6,6 +6,7 @@
     <title>Pesan Tiket Online</title>
     {{-- Memuat pustaka Tailwind CSS --}}
     @vite('resources/css/app.css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -34,9 +35,7 @@
                 {{-- Tombol Pesawat --}}
                 <a href="{{ route('flights.search') }}" class="group">
                     <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-64">
-                        <svg class="w-16 h-16 mx-auto mb-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        </svg>
+                        <i class='fas fa-plane-departure text-blue-500 text-6xl mb-4'></i>
                         <h2 class="text-2xl font-semibold text-gray-900">Pesawat</h2>
                     </div>
                 </a>
@@ -44,19 +43,16 @@
                 {{-- Tombol Kapal Laut --}}
                 <a href="{{ route('ships.search') }}" class="group">
                     <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-64">
-                        <svg class="w-16 h-16 mx-auto mb-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15h18l-3 4H6l-3-4z M12 15V7m0 0l4 2-4 0z"></path>
-                        </svg>
+                        <i class="fas fa-anchor text-teal-500 text-6xl mb-4"></i>
                         <h2 class="text-2xl font-semibold text-gray-900">Kapal Laut</h2>
                     </div>
                 </a>
+
             
                 {{-- Tombol Hotel --}}
                 <a href="{{ route('hotels.search') }}" class="group">
                      <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-64">
-                        <svg class="w-16 h-16 mx-auto mb-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0H1m18 0h-2v4m0-4h-2m-4 0h2m-4-4v4M3 9l6 6M9 15h6m-6-6l6-6M15 3v6"></path>
-                        </svg>
+                        <i class="fas fa-bed text-orange-500 text-6xl mb-4"></i>
                         <h2 class="text-2xl font-semibold text-gray-900">Hotel</h2>
                     </div>
                 </a>
